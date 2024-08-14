@@ -4,8 +4,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-const START_ID = 9190400;
-const END_ID = 9191498;
+// const START_ID = 9190400;
+// const END_ID = 9191498;
+const START_ID = 9191499;
+const END_ID = 9200000;
 const BASE_URL = 'https://app.joinhandshake.com/stu/jobs/';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +27,7 @@ async function processJob(page, jobId) {
 
     // Check if the page contains "Cuseworks" and has an "Apply" button
     const hasCuseworks = await page.evaluate(() => {
-        return document.body.textContent.includes('CuseWorks');
+        return document.body.textContent.toLowerCase().includes('cuseworks');
     });
 
     const hasApplyButton = await page.evaluate(() => {
