@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 const START_ID = 9190000;
-const END_ID = 9200000;
+const END_ID = 9195000;
 const BASE_URL = 'https://app.joinhandshake.com/stu/jobs/';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,8 +25,8 @@ async function processJob(page, jobId) {
     await page.goto(jobUrl);
 
     // Check if the page contains "Cuseworks" and has an "Apply" button
+    const keywords = ['jma','dome','food','barnes','saddler','cuseworks','shine','cafe','catering','campus','store','non-work study','centers'];
     const hasCuseworks = await page.evaluate((keywords) => {
-        const keywords = ['jma','dome','food','barnes','saddler','cuseworks','shine','cafe','catering','campus','store','non-work study','centers'];
         return keywords.filter(keyword => document.body.textContent.toLowerCase().includes(keyword));
     }, keywords);
 
