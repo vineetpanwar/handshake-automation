@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-const START_ID = 9190000;
+const START_ID = 9193595;
 const END_ID = 9195000;
 const BASE_URL = 'https://app.joinhandshake.com/stu/jobs/';
 
@@ -24,23 +24,26 @@ async function processJob(page, jobId) {
     const jobUrl = `${BASE_URL}${jobId}`;
     await page.goto(jobUrl);
 
-    // Check if the page contains "Cuseworks" and has an "Apply" button
-    const keywords = ['jma','dome','food','barnes','saddler','cuseworks','shine','cafe','catering','campus','store','non-work study','centers'];
+    const keywords = ['jma','dome','food','barnes','saddler','cuseworks','shine','cafe','catering','campus','store','non-work study'];
+    
+    const isARetry = await page.evaluate(() => {
+        return document.body.textContent.toLowerCase().includes('retry later');
+    });
+
     const hasCuseworks = await page.evaluate((keywords) => {
         return keywords.filter(keyword => document.body.textContent.toLowerCase().includes(keyword));
     }, keywords);
 
-    // const hasApplyButton = await page.evaluate(() => {
-    //     return [...document.querySelectorAll('span')].some(span => span.textContent === 'Apply');
-    // });
-
-    if (hasCuseworks.length) {
-        // Take a screenshot
+    if (isARetry) {
+        console.log(`Retrying job ID ${jobId} after 5 seconds...`);
+        await delay(5000); // Wait for 5 seconds
+        return await processJob(page, jobId); // Retry the job
+    } else if (hasCuseworks.length) {
         const screenshotPath = path.join(__dirname, `${jobId}.png`);
         await page.screenshot({ path: screenshotPath });
         console.log(`Screenshot saved for job ID ${jobId} at ${screenshotPath}`);
     } else {
-        console.log(`No screenshot for job ID ${jobId} - Cuseworks or Apply button not found`);
+        console.log(`No screenshot for job ID ${jobId} - Cuseworks not found`);
     }
 }
 
@@ -51,6 +54,7 @@ async function delay(ms) {
 (async () => {
     const browser = await puppeteer.launch({ headless: false }); // Set to true if you don't want the browser UI
     const page = await browser.newPage();
+
 
     // Log in to Handshake
     await loginToHandshake(page);
