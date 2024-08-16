@@ -30,11 +30,11 @@ async function processJob(page, jobId) {
         return keywords.filter(keyword => document.body.textContent.toLowerCase().includes(keyword));
     }, keywords);
 
-    const hasApplyButton = await page.evaluate(() => {
-        return [...document.querySelectorAll('span')].some(span => span.textContent === 'Apply');
-    });
+    // const hasApplyButton = await page.evaluate(() => {
+    //     return [...document.querySelectorAll('span')].some(span => span.textContent === 'Apply');
+    // });
 
-    if (hasCuseworks && hasApplyButton) {
+    if (hasCuseworks) {
         // Take a screenshot
         const screenshotPath = path.join(__dirname, `${jobId}.png`);
         await page.screenshot({ path: screenshotPath });
