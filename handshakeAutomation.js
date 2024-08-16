@@ -4,14 +4,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-// const START_ID = 9190400;
-// const END_ID = 9191498;
-const START_ID = 9191499;
+const START_ID = 9190000;
 const END_ID = 9200000;
 const BASE_URL = 'https://app.joinhandshake.com/stu/jobs/';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
 async function loginToHandshake(page) {
     // Go to the login page
     await page.goto('https://app.joinhandshake.com/login');
@@ -44,6 +43,10 @@ async function processJob(page, jobId) {
     }
 }
 
+async function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 (async () => {
     const browser = await puppeteer.launch({ headless: false }); // Set to true if you don't want the browser UI
     const page = await browser.newPage();
@@ -51,10 +54,13 @@ async function processJob(page, jobId) {
     // Log in to Handshake
     await loginToHandshake(page);
 
-    // Process each job ID from start to end
+    // Process each job ID from start to end with a delay
     for (let jobId = START_ID; jobId <= END_ID; jobId++) {
         try {
             await processJob(page, jobId);
+
+            // Add a 10-second delay before processing the next job
+            await delay(10000); // 10 seconds = 10,000 milliseconds
         } catch (error) {
             console.error(`Error processing job ID ${jobId}:`, error);
         }
