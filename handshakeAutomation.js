@@ -34,7 +34,7 @@ async function processJob(page, jobId) {
     //     return [...document.querySelectorAll('span')].some(span => span.textContent === 'Apply');
     // });
 
-    if (hasCuseworks) {
+    if (hasCuseworks.length) {
         // Take a screenshot
         const screenshotPath = path.join(__dirname, `${jobId}.png`);
         await page.screenshot({ path: screenshotPath });
