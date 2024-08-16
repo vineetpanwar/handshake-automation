@@ -17,7 +17,7 @@ async function loginToHandshake(page) {
 
     // Enter credentials manually and wait for 2 minutes
     console.log("Please log in manually. Waiting for 2 minutes...");
-    await new Promise(resolve => setTimeout(resolve, 2 * 60 * 1000)); // 2 minutes wait time
+    await new Promise(resolve => setTimeout(resolve, 1 * 60 * 1000)); // 2 minutes wait time
 }
 
 async function processJob(page, jobId) {
@@ -25,9 +25,10 @@ async function processJob(page, jobId) {
     await page.goto(jobUrl);
 
     // Check if the page contains "Cuseworks" and has an "Apply" button
-    const hasCuseworks = await page.evaluate(() => {
-        return document.body.textContent.toLowerCase().includes('cuseworks');
-    });
+    const hasCuseworks = await page.evaluate((keywords) => {
+        const keywords = ['jma','dome','food','barnes','saddler','cuseworks','shine','cafe','catering','campus','store','non-work study','centers'];
+        return keywords.filter(keyword => document.body.textContent.toLowerCase().includes(keyword));
+    }, keywords);
 
     const hasApplyButton = await page.evaluate(() => {
         return [...document.querySelectorAll('span')].some(span => span.textContent === 'Apply');
@@ -60,7 +61,7 @@ async function delay(ms) {
             await processJob(page, jobId);
 
             // Add a 10-second delay before processing the next job
-            await delay(10000); // 10 seconds = 10,000 milliseconds
+            await delay(2000); // 10 seconds = 10,000 milliseconds
         } catch (error) {
             console.error(`Error processing job ID ${jobId}:`, error);
         }
